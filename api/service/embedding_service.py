@@ -1,9 +1,7 @@
 # api/service/embedding_service.py
 """
-Embedding service using SentenceTransformers.
-
-Default model: BAAI/bge-base-en-v1.5
-Output dimension: 768
+Embedding service using SentenceTransformers (BAAI/bge-base-en-v1.5).
+Output dimension: 768 — update VectorField(dimensions=768) in models.py.
 """
 
 import logging
@@ -18,18 +16,18 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 HF_TOKEN = os.getenv("HF_TOKEN")
+EMBEDDINGS_ENABLED = os.getenv("EMBEDDINGS_ENABLED", "false").lower() == "true"
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "BAAI/bge-base-en-v1.5")
-EMBEDDINGS_ENABLED = os.getenv("EMBEDDINGS_ENABLED", "true").lower() == "true"
 
 
 @lru_cache(maxsize=1)
 def get_embedding_model():
     """
-    Lazily load the embedding model only when first needed.
-    Cached once per process.
+    Load the embedding model only when first needed.
+    This prevents heavy imports during Django startup.
     """
     if not EMBEDDINGS_ENABLED:
-        logger.warning("Embeddings are disabled via EMBEDDINGS_ENABLED.")
+        logger.warning("Embeddings are disabled.")
         return None
 
     try:
@@ -42,23 +40,22 @@ def get_embedding_model():
         model = SentenceTransformer(EMBEDDING_MODEL_NAME, token=HF_TOKEN)
         logger.info("Embedding model loaded successfully")
         return model
-
     except Exception as exc:
-        logger.exception("Failed to load embedding model: %s", exc)
+        logger.exception("Failed to load SentenceTransformer model: %s", exc)
         return None
 
 
 def generate_embedding(text: str) -> Optional[List[float]]:
     """
-    Generate a normalized embedding vector.
-    Returns None if embeddings are unavailable or input is empty.
+    Generate a 768-dimension embedding vector for the given text.
+    Returns None on failure so callers handle it gracefully.
     """
     if not text or not text.strip():
         return None
 
     model = get_embedding_model()
     if model is None:
-        logger.warning("Embedding model unavailable; skipping embedding.")
+        logger.warning("Embedding model not loaded; skipping embedding.")
         return None
 
     try:

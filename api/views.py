@@ -32,7 +32,7 @@ from .service.embedding_service import (
 )
 from .utils.email import send_verification_email
 from .utils.supabase_storage import upload_file, replace_file, delete_file
-from .utils.search_assistant import ask_library_assistant
+# from .utils.search_assistant import ask_library_assistant
 from .permissions import (
     IsLibrarian, LibrarianFullStudentReadOnly,
     BorrowedBookPermission, UserProfilePermission, BookSuggestionPermission,
@@ -913,12 +913,12 @@ class GlobalSearchAssistantView(APIView):
             research = apply_filters(research, department=department, category=category)
             results += tag_results(research, ResearchRepositorySerializer, "research")
  
-        assistant_response = ask_library_assistant(query, results) if use_assistant else None
+        # assistant_response = ask_library_assistant(query, results) if use_assistant else None
  
         return Response({
             "query":     query,
             "count":     len(results),
-            "assistant": assistant_response,
+            # "assistant": assistant_response,
             "results":   results,
         })
  
