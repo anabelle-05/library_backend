@@ -118,7 +118,7 @@ EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = f"Library System <{config('EMAIL_HOST_USER')}>"
 
-FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:3000")
+FRONTEND_URL = config("FRONTEND_URL", default="https://library-front-end-two.vercel.app")
 
 
 # ── Password validation ───────────────────────────────────────────────────
@@ -153,10 +153,10 @@ SUPABASE_SERVICE_KEY = config("SUPABASE_SERVICE_KEY")
 # ── CORS ──────────────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "https://library-front-end-two.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "https://library-front-end-two.vercel.app",
 ]
